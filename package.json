@@ -1,7 +1,7 @@
 {
   "name": "liem-control-panel",
-  "version": "0.1.3",
-  "description": "Liem Control Panel - Background microservices suite",
+  "version": "0.1.4",
+  "description": "Liem Microservice",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "SET ELECTRON_RUN_AS_NODE=&&electron-vite dev",
@@ -10,8 +10,8 @@
     "dist": "electron-vite build && electron-builder"
   },
   "build": {
-    "appId": "com.liem.controlpanel",
-    "productName": "Liem Control Panel",
+    "appId": "com.liem.microservice",
+    "productName": "Liem Microservice",
     "npmRebuild": false,
     "directories": {
       "output": "dist"
@@ -45,7 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Liem Control Panel",
+      "shortcutName": "Liem Microservice",
       "runAfterFinish": true
     },
     "publish": {
