@@ -4,7 +4,7 @@
   "description": "Liem Control Panel - Background microservices suite",
   "main": "out/main/index.js",
   "scripts": {
-    "dev": "electron-vite dev",
+    "dev": "SET ELECTRON_RUN_AS_NODE=&&electron-vite dev",
     "build": "electron-vite build",
     "start": "electron-vite preview",
     "dist": "electron-vite build && electron-builder"
@@ -12,6 +12,7 @@
   "build": {
     "appId": "com.liem.controlpanel",
     "productName": "Liem Control Panel",
+    "npmRebuild": false,
     "directories": {
       "output": "dist"
     },
@@ -28,21 +29,40 @@
       }
     ],
     "win": {
+      "icon": "resources/icon.png",
       "target": [
         {
-          "target": "portable",
-          "arch": ["x64"]
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
         }
       ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Liem Control Panel",
+      "runAfterFinish": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "AxelS27",
+      "repo": "Liem-Microservices"
     }
   },
   "dependencies": {
-    "discord-rpc": "^4.0.1"
+    "discord-rpc": "^4.0.1",
+    "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "@electron-toolkit/utils": "^3.0.0",
     "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^10.1.0",
     "electron": "^33.4.11",
     "electron-builder": "^25.1.8",
     "electron-vite": "^2.3.0",

@@ -9,5 +9,9 @@ contextBridge.exposeInMainWorld('liem', {
   config: {
     get: () => ipcRenderer.invoke('config:get'),
     set: (data) => ipcRenderer.invoke('config:set', data)
+  },
+  autostart: {
+    get: () => ipcRenderer.invoke('autostart:get'),
+    set: (enabled) => ipcRenderer.invoke('autostart:set', enabled)
   }
 })

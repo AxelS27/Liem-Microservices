@@ -37,6 +37,18 @@ export default function Sidebar() {
           <span className="text-base leading-none">🎭</span>
           <span className="font-medium">FakeRPC</span>
         </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm mb-0.5 transition-colors ${
+              isActive ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+            }`
+          }
+        >
+          <span className="text-base leading-none">⚙️</span>
+          <span className="font-medium">Settings</span>
+        </NavLink>
       </nav>
 
       <div className="px-5 py-3 border-t border-white/5 text-[10px] text-white/15">v0.1.0</div>

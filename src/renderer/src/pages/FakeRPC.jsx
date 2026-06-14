@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import DiscordPreview from '../components/DiscordPreview'
 import netflixLogo from '../assets/netflix.jpg'
 import youtubeLogo from '../assets/youtube.jpg'
+import dimsumLogo from '../assets/dimsum_studio.png'
 
 const PRESETS = [
   {
@@ -46,6 +47,24 @@ const PRESETS = [
         state: f.channel ? `by ${f.channel}` : undefined,
         largeImageKey: 'youtube',
         largeImageText: 'YouTube',
+        ...(showTimestamp && { startTimestamp: Date.now() })
+      }
+    }
+  },
+  {
+    id: 'dimsum',
+    name: 'Dimsum Studio',
+    emoji: '🥟',
+    logo: dimsumLogo,
+    clientId: '1506975051776528584',
+    fields: [
+      { key: 'status', label: 'Status', placeholder: 'creating content' }
+    ],
+    buildActivity(f, showTimestamp) {
+      return {
+        details: (f.status || 'creating content').padEnd(2, ' '),
+        largeImageKey: 'dimsum_studio',
+        largeImageText: 'Dimsum Studio',
         ...(showTimestamp && { startTimestamp: Date.now() })
       }
     }

@@ -1,0 +1,66 @@
+name: Release
+
+# Builds in this repo, then publishes the installer + updater
+# manifest (latest.yml) to the public release repo (AxelS27/Liem-Microservices).
+#
+# Trigger by pushing a version tag:
+#   git tag v0.1.0
+#   git push origin v0.1.0
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PUBLIC_REPO: AxelS27/Liem-Microservices
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and Package Electron App
+        run: npm run dist
+
+      # Find the produced installer + latest.yml, then copy them to release-artifacts
+      - name: Collect release artifacts
+        id: collect
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem -Path "dist" -Filter "*Setup*.exe" | Select-Object -First 1
+          $yml = Get-ChildItem -Path "dist" -Filter "latest.yml" | Select-Object -First 1
+          if (-not $setup) { throw "NSIS installer not found" }
+          if (-not $yml)  { throw "latest.yml not found" }
+
+          New-Item -ItemType Directory -Path "release-artifacts" -Force | Out-Null
+          Copy-Item $setup.FullName "release-artifacts/"
+          Copy-Item $yml.FullName  "release-artifacts/"
+
+          Get-ChildItem "release-artifacts" | ForEach-Object { Write-Host $_.Name }
+
+      # Push the release to the PUBLIC repo using a personal access token.
+      # The PAT must have `contents: write` on the public repo.
+      - name: Create public GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release create $tag `
+            --repo $env:PUBLIC_REPO `
+            --title "Liem Control Panel $tag" `
+            --notes "See the assets below to download and install this version." `
+            (Get-ChildItem release-artifacts | ForEach-Object { $_.FullName })
