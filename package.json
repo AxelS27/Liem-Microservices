@@ -1,6 +1,6 @@
 {
   "name": "liem-control-panel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Liem Control Panel - Background microservices suite",
   "main": "out/main/index.js",
   "scripts": {

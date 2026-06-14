@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Build and Package Electron App
-        run: npm run dist
+        run: npm run dist -- --publish never
 
       # Find the produced installer + latest.yml, then copy them to release-artifacts
       - name: Collect release artifacts
