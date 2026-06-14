@@ -72,10 +72,10 @@ function createWindow() {
 
 function createTray() {
   tray = new Tray(getTrayIconPath())
-  tray.setToolTip('Liem Microservice')
+  tray.setToolTip('Liem Microservices')
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Open Liem Microservice', click: () => mainWindow.show() },
+      { label: 'Open Liem Microservices', click: () => mainWindow.show() },
       { type: 'separator' },
       { label: 'Quit', click: () => app.exit(0) }
     ])

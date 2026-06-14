@@ -41,7 +41,7 @@ export default function Settings() {
           <div className="flex items-center justify-between bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3.5">
             <div>
               <div className="text-sm font-medium text-white/70">Run on startup</div>
-              <p className="text-[11px] text-white/25 mt-0.5">Start Liem Microservice automatically when you log into Windows.</p>
+              <p className="text-[11px] text-white/25 mt-0.5">Start Liem Microservices automatically when you log into Windows.</p>
             </div>
             <button
               type="button"

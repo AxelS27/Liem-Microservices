@@ -61,6 +61,6 @@ jobs:
           $tag = "${{ github.ref_name }}"
           gh release create $tag `
             --repo $env:PUBLIC_REPO `
-            --title "Liem Microservice $tag" `
+            --title "Liem Microservices $tag" `
             --notes "See the assets below to download and install this version." `
             (Get-ChildItem release-artifacts | ForEach-Object { $_.FullName })
