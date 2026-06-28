@@ -2,15 +2,16 @@ import { exec } from 'child_process'
 import { requestActivity, releaseActivity } from './rpcPriority.js'
 
 const ZOOM_CLIENT_ID = '1495738866139795546'
+const WATCH_CMD = 'powershell -NoProfile -ExecutionPolicy Bypass -Command "if (Get-Process -Name Zoom -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -match \'Meeting|Webinar|Rapat|Pertemuan|Reun|Riun\' }) { Write-Output \'running\' }"'
 
 let interval = null
 let running = false
 let startTimestamp = null
 
 function poll() {
-  exec('tasklist /FI "IMAGENAME eq Zoom.exe" /NH /FO CSV', async (err, stdout) => {
+  exec(WATCH_CMD, async (err, stdout) => {
     if (err) return
-    const nowRunning = stdout.toLowerCase().includes('zoom.exe')
+    const nowRunning = stdout.toLowerCase().includes('running')
     if (nowRunning === running) return
     running = nowRunning
 
