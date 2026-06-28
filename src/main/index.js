@@ -37,6 +37,11 @@ function writeConfig(data) {
   writeFileSync(configPath(), JSON.stringify(data, null, 2))
 }
 
+function getAutostartPath() {
+  const p = process.execPath
+  return process.platform === 'win32' ? `"${p}"` : p
+}
+
 let mainWindow
 let tray
 
@@ -92,7 +97,7 @@ ipcMain.handle('config:set', (_, data) => { writeConfig(data); return { success:
 
 ipcMain.handle('autostart:get', () => {
   return app.getLoginItemSettings({
-    path: process.execPath,
+    path: getAutostartPath(),
     args: ['--hidden']
   }).openAtLogin
 })
@@ -100,7 +105,7 @@ ipcMain.handle('autostart:get', () => {
 ipcMain.handle('autostart:set', (_, enabled) => {
   app.setLoginItemSettings({
     openAtLogin: enabled,
-    path: process.execPath,
+    path: getAutostartPath(),
     args: ['--hidden']
   })
   const markerPath = join(app.getPath('userData'), 'autostart-initialized')
@@ -112,7 +117,7 @@ ipcMain.handle('autostart:set', (_, enabled) => {
     }
   }
   return app.getLoginItemSettings({
-    path: process.execPath,
+    path: getAutostartPath(),
     args: ['--hidden']
   }).openAtLogin
 })
@@ -135,7 +140,7 @@ if (!gotTheLock) {
       if (!existsSync(markerPath)) {
         app.setLoginItemSettings({
           openAtLogin: true,
-          path: process.execPath,
+          path: getAutostartPath(),
           args: ['--hidden']
         })
         try {
@@ -145,13 +150,13 @@ if (!gotTheLock) {
         }
       } else {
         const settings = app.getLoginItemSettings({
-          path: process.execPath,
+          path: getAutostartPath(),
           args: ['--hidden']
         })
         if (settings.openAtLogin) {
           app.setLoginItemSettings({
             openAtLogin: true,
-            path: process.execPath,
+            path: getAutostartPath(),
             args: ['--hidden']
           })
         }
