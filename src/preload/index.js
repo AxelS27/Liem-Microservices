@@ -13,5 +13,13 @@ contextBridge.exposeInMainWorld('liem', {
   autostart: {
     get: () => ipcRenderer.invoke('autostart:get'),
     set: (enabled) => ipcRenderer.invoke('autostart:set', enabled)
+  },
+  window: {
+    minimize: () => ipcRenderer.send('window:minimize'),
+    maximize: () => ipcRenderer.send('window:maximize'),
+    close: () => ipcRenderer.send('window:close'),
+    isMaximized: () => ipcRenderer.invoke('window:isMaximized'),
+    toggleDevTools: () => ipcRenderer.send('window:toggleDevTools'),
+    quit: () => ipcRenderer.send('app:quit')
   }
 })

@@ -51,7 +51,8 @@ function createWindow() {
     height: 680,
     minWidth: 860,
     minHeight: 580,
-    backgroundColor: '#0a0a0f',
+    backgroundColor: '#0a0a0a',
+    frame: false,
     show: false,
     icon: getIconPath(),
     webPreferences: {
@@ -96,6 +97,10 @@ ipcMain.handle('config:get', () => readConfig())
 ipcMain.handle('config:set', (_, data) => { writeConfig(data); return { success: true } })
 
 ipcMain.handle('autostart:get', () => {
+  const markerPath = join(app.getPath('userData'), 'autostart-initialized')
+  if (!existsSync(markerPath)) {
+    return true
+  }
   return app.getLoginItemSettings({
     path: getAutostartPath(),
     args: ['--hidden']
@@ -120,6 +125,29 @@ ipcMain.handle('autostart:set', (_, enabled) => {
     path: getAutostartPath(),
     args: ['--hidden']
   }).openAtLogin
+})
+
+ipcMain.on('window:minimize', () => {
+  mainWindow.minimize()
+})
+ipcMain.on('window:maximize', () => {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize()
+  } else {
+    mainWindow.maximize()
+  }
+})
+ipcMain.on('window:close', () => {
+  mainWindow.close()
+})
+ipcMain.handle('window:isMaximized', () => {
+  return mainWindow.isMaximized()
+})
+ipcMain.on('window:toggleDevTools', () => {
+  mainWindow.webContents.toggleDevTools()
+})
+ipcMain.on('app:quit', () => {
+  app.exit(0)
 })
 
 const gotTheLock = app.requestSingleInstanceLock()

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import DiscordPreview from '../components/DiscordPreview'
-import netflixLogo from '../assets/netflix.jpg'
+import netflixLogo from '../assets/netflix.png'
 import youtubeLogo from '../assets/youtube.jpg'
 import dimsumLogo from '../assets/dimsum_studio.png'
+import customLogo from '../assets/icon.png'
 
 const PRESETS = [
   {
@@ -23,7 +24,7 @@ const PRESETS = [
         return f.season ? `${ep} · Season ${f.season}` : ep
       })()
       return {
-        details: (f.title || 'something').padEnd(2, ' '),
+        details: (f.title || 'Idle').padEnd(2, ' '),
         state: epState,
         largeImageKey: 'netflix',
         largeImageText: 'Netflix',
@@ -58,25 +59,37 @@ const PRESETS = [
     logo: dimsumLogo,
     clientId: '1506975051776528584',
     fields: [
-      { key: 'status', label: 'Status', placeholder: 'creating content' }
+      { key: 'status', label: 'Status', placeholder: 'Creating content' }
     ],
     buildActivity(f, showTimestamp) {
       return {
-        details: (f.status || 'creating content').padEnd(2, ' '),
+        details: (f.status || 'Creating content').padEnd(2, ' '),
         largeImageKey: 'dimsum_studio',
         largeImageText: 'Dimsum Studio',
+        ...(showTimestamp && { startTimestamp: Date.now() })
+      }
+    }
+  },
+  {
+    id: 'custom',
+    name: 'Custom',
+    emoji: '⚙️',
+    logo: customLogo,
+    clientId: '1459475872732938302',
+    fields: [
+      { key: 'text1', label: 'Text 1 (Details)', placeholder: 'Custom Text 1...' },
+      { key: 'text2', label: 'Text 2 (State)', placeholder: 'Custom Text 2... (optional)' }
+    ],
+    buildActivity(f, showTimestamp) {
+      return {
+        details: (f.text1 || 'Idle').padEnd(2, ' '),
+        state: f.text2 ? f.text2 : undefined,
         ...(showTimestamp && { startTimestamp: Date.now() })
       }
     }
   }
 ]
 
-const STATUS_BADGE = {
-  idle: { label: 'Inactive', dot: 'bg-white/20', text: 'text-white/30' },
-  connecting: { label: 'Connecting…', dot: 'bg-yellow-400 animate-pulse', text: 'text-yellow-400' },
-  active: { label: 'Live', dot: 'bg-green-400', text: 'text-green-400' },
-  error: { label: 'Error', dot: 'bg-red-400', text: 'text-red-400' }
-}
 
 function loadLocal() {
   try { return JSON.parse(localStorage.getItem('fakerpc') ?? '{}') } catch { return {} }
@@ -87,7 +100,7 @@ export default function FakeRPC() {
 
   const [presetId, setPresetId] = useState(saved.presetId ?? 'netflix')
   const [fields, setFields] = useState(saved.fields ?? {})
-  const [showTimestamp, setShowTimestamp] = useState(saved.showTimestamp ?? true)
+  const showTimestamp = true
   const [activePresetId, setActivePresetId] = useState(null)
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
@@ -139,40 +152,32 @@ export default function FakeRPC() {
     setStatus('idle')
   }
 
-  const badge = STATUS_BADGE[status]
-
   return (
     <div className="p-7 max-w-5xl">
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-white">FakeRPC</h1>
-          <p className="text-white/35 text-sm mt-1">Set a custom Discord Rich Presence for any app</p>
-        </div>
-        <div className="flex items-center gap-2 mt-1 bg-white/5 rounded-full px-3 py-1.5">
-          <span className={`w-2 h-2 rounded-full ${badge.dot}`} />
-          <span className={`text-xs font-medium ${badge.text}`}>{badge.label}</span>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-white">FakeRPC</h1>
+        <p className="text-liem-text-dim text-sm mt-1">Set a custom Discord Rich Presence for any app</p>
       </div>
 
       <div className="grid grid-cols-[1fr_320px] gap-7">
         <div className="space-y-6">
           {/* Presets */}
           <div>
-            <label className="block text-[11px] font-semibold text-white/35 uppercase tracking-widest mb-3">
+            <label className="block text-[11px] font-semibold text-liem-accent uppercase tracking-widest mb-3">
               Preset
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {PRESETS.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => handlePresetChange(p.id)}
-                  className={`flex items-center gap-2.5 py-3 px-4 rounded-xl text-sm font-medium transition-all border ${
+                  className={`flex items-center gap-2.5 py-1.5 px-4 rounded-[4px] text-xs font-medium transition-all border shrink-0 ${
                     presetId === p.id
-                      ? 'bg-white/10 border-white/20 text-white'
-                      : 'bg-white/[0.03] border-white/5 text-white/40 hover:bg-white/6 hover:text-white/60'
+                      ? 'bg-[#2a1f0e] border-liem-accent text-liem-accent font-semibold'
+                      : 'bg-[#1a1a1a] border-liem-border text-[#abb2bf] hover:bg-liem-hover hover:text-white'
                   }`}
                 >
-                  <span className="text-xl leading-none">{p.emoji}</span>
+                  <img src={p.logo} alt="" className="w-6 h-6 object-cover rounded-[2px] shrink-0" />
                   <span>{p.name}</span>
                 </button>
               ))}
@@ -181,38 +186,29 @@ export default function FakeRPC() {
 
           {/* Dynamic fields */}
           <div>
-            <label className="block text-[11px] font-semibold text-white/35 uppercase tracking-widest mb-3">
+            <label className="block text-[11px] font-semibold text-liem-accent uppercase tracking-widest mb-3">
               Details
             </label>
             <div className="space-y-3">
               {preset?.fields.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-xs text-white/35 mb-1.5">{field.label}</label>
+                  <label className="block text-xs text-liem-text-dim mb-1">{field.label}</label>
                   <input
                     type="text"
                     value={fields[field.key] ?? ''}
                     onChange={(e) => setField(field.key, e.target.value)}
                     placeholder={field.placeholder}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/15 focus:outline-none focus:border-white/25"
+                    className="w-full bg-[#1a1a1a] border border-[#2e2e2e] rounded-[4px] px-3 py-2 text-xs text-liem-text placeholder-[#3a3a3a] outline-none focus:border-liem-accent transition-colors"
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Timestamp toggle */}
-          <button
-            onClick={() => setShowTimestamp((v) => !v)}
-            className="flex items-center gap-3 group"
-          >
-            <div className={`relative w-9 h-5 rounded-full transition-colors ${showTimestamp ? 'bg-violet-600' : 'bg-white/10'}`}>
-              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${showTimestamp ? 'translate-x-4' : 'translate-x-0.5'}`} />
-            </div>
-            <span className="text-sm text-white/50 group-hover:text-white/70 transition-colors">Show elapsed time</span>
-          </button>
+
 
           {error && (
-            <div className="bg-red-500/8 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">
+            <div className="bg-red-950/20 border border-red-900/50 rounded-[4px] px-3 py-2 text-xs text-red-400">
               {error}
             </div>
           )}
@@ -220,7 +216,7 @@ export default function FakeRPC() {
           {isActive ? (
             <button
               onClick={handleDeactivate}
-              className="w-full bg-white/6 hover:bg-white/10 text-white/70 hover:text-white font-semibold rounded-xl py-3 text-sm transition-colors border border-white/8"
+              className="w-full bg-[#1a0a0a] hover:bg-[#2a1818] text-[#e05555] hover:text-[#ff6b6b] font-semibold rounded-[4px] py-2.5 text-xs transition-colors border border-[#3a2020]"
             >
               Deactivate
             </button>
@@ -228,7 +224,7 @@ export default function FakeRPC() {
             <button
               onClick={handleActivate}
               disabled={status === 'connecting'}
-              className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 text-sm transition-colors"
+              className="w-full bg-liem-accent hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-[4px] py-2.5 text-xs transition-colors"
             >
               {status === 'connecting' ? 'Connecting to Discord…' : 'Activate RPC'}
             </button>
@@ -237,7 +233,7 @@ export default function FakeRPC() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[11px] font-semibold text-white/35 uppercase tracking-widest mb-3">
+            <label className="block text-[11px] font-semibold text-liem-accent uppercase tracking-widest mb-3">
               Discord Preview
             </label>
             <DiscordPreview

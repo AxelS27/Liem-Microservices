@@ -5,9 +5,14 @@ const services = [
     to: '/fakerpc',
     icon: '🎭',
     name: 'FakeRPC',
-    description: 'Set a custom Discord Rich Presence for any app',
-    status: 'ready'
+    description: 'Set a custom Discord Rich Presence for any app'
   },
+  {
+    to: '/settings',
+    icon: '⚙️',
+    name: 'Settings',
+    description: 'Configure Control Panel startup and preferences'
+  }
 ]
 
 export default function Dashboard() {
@@ -16,26 +21,22 @@ export default function Dashboard() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-white/40 text-sm mt-1">Liem microservices running on your machine</p>
+        <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+        <p className="text-liem-text-dim text-sm mt-1">Liem microservices running on your machine</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 max-w-2xl">
+      <div className="flex gap-4">
         {services.map((s) => (
           <button
             key={s.to}
             onClick={() => navigate(s.to)}
-            className="text-left bg-white/5 hover:bg-white/8 border border-white/5 hover:border-white/10 rounded-xl p-5 transition-all group"
+            className="w-52 h-52 flex flex-col items-center justify-center text-center bg-liem-sidebar hover:bg-liem-hover border border-white/10 hover:border-liem-accent/40 rounded-[4px] p-6 transition-all group duration-150"
           >
-            <div className="text-2xl mb-3">{s.icon}</div>
-            <div className="font-semibold text-white text-sm mb-1 group-hover:text-white">
+            <div className="text-4xl mb-4 select-none">{s.icon}</div>
+            <div className="font-semibold text-white text-sm mb-1.5 group-hover:text-white">
               {s.name}
             </div>
-            <div className="text-xs text-white/35 leading-relaxed">{s.description}</div>
-            <div className="mt-3 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-              <span className="text-[10px] text-white/30 uppercase tracking-wider">Ready</span>
-            </div>
+            <div className="text-[11px] text-liem-text-dim leading-relaxed max-w-[160px]">{s.description}</div>
           </button>
         ))}
       </div>
